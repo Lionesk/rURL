@@ -1,7 +1,12 @@
 [package]
-name = "rURL"
+name = "r_url"
 version = "0.1.0"
 authors = ["Emilio Assuncao <emilio@fastmail.com>"]
 edition = "2018"
 
 [dependencies]
+clap = "2.32.0"
+encoding = "0.2.33"
+regex = "1"
+serde_json = "1.0.32"
+url = "1.7.1"
