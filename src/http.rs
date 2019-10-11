@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use regex::Regex;
 
-const APPLICATION: &str = "rust-curl";
+const APPLICATION: &str = "r_url";
 const VERSION: &str = "0.1";
 
 pub enum Operation {
@@ -17,12 +17,12 @@ pub struct Request {
 }
 
 impl Request {
-    pub fn new(host: &str, op: &Operation, resource: &String, head: &HashMap<String, String>, b: &String) -> Request{
-        let operation = match op {
+    pub fn new(host: &str, operation: &Operation, resource: &String, head: &HashMap<String, String>, b: &String) -> Request{
+        let op = match operation {
             Operation::Get => String::from("GET"),
             Operation::Post => String::from("POST")
         };
-        let request_line: String = format!("{} {} HTTP/1.1", operation, resource);
+        let request_line: String = format!("{} {} HTTP/1.1", op, resource);
         let mut headers: HashMap<String, String> = HashMap::new();
         headers.insert(String::from("Host"), host.to_string());
         headers.insert(String::from("User-Agent"), format!("{}/{}", APPLICATION, VERSION));
@@ -66,7 +66,7 @@ pub struct Response {
 }
 
 impl Response {
-    pub fn new(raw_text: &String) -> Response{
+    pub fn from_str(raw_text: &String) -> Response{
         let mut lines = raw_text.lines();
         let status_line = match lines.next() {
             Some(line) => String::from(line),
@@ -92,5 +92,16 @@ impl Response {
             headers,
             body
         }
+    }
+
+    pub fn to_string(&self) -> String {
+        let mut output: String = String::new();
+        output.push_str(&format!("{}\r\n", self.status_line));
+        for (k, v) in self.headers.iter() {
+            output.push_str(&format!("{}: {}\r\n", k, v))
+        }
+        output.push_str("\r\n");
+        output.push_str(&format!("{}\r\n", self.body));
+        return output;
     }
 }

@@ -82,7 +82,7 @@ fn run_client(url: &str, operation: Operation, resource: String,
                     0
                 }
             };
-            let response = Response::new(&buf);
+            let response = Response::from_str(&buf);
             if !outfile.is_empty() {
             	let mut file = OpenOptions::new().append(true).create(true).open(outfile.to_string()).unwrap();
             	if verbose {
